@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RehaAssist — Помощник Реабилитации</title>
+    <meta name="description" content="Приложение для помощи людям после инсульта: дневник самочувствия, упражнения, прием лекарств и связь с близкими.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/translations.js"></script>
+</head>
+<body class="loading-app">
+
+    <!-- ===================== AUTH SCREEN ===================== -->
+    <div id="auth-screen" class="auth-container">
+
+        <!-- Language Switcher -->
+        <div class="auth-lang-switcher">
+            <button class="auth-lang-btn active" data-lang="ru" onclick="window.setAuthLang('ru')">RU</button>
+            <button class="auth-lang-btn" data-lang="kk" onclick="window.setAuthLang('kk')">ҚЗ</button>
+            <button class="auth-lang-btn" data-lang="en" onclick="window.setAuthLang('en')">EN</button>
+        </div>
+
+        <!-- LEFT: Hero Panel (visible on large screens) -->
+        <div class="auth-hero">
+            <div class="auth-hero-content">
+
+                <!-- Brand Logo -->
+                <div class="auth-logo-block">
+                    <img src="logo.png" alt="RehaAssist Logo" class="auth-logo-img">
+                    <div class="auth-logo-text">
+                        <span class="auth-logo-name">RehaAssist</span>
+                        <span class="auth-logo-tagline" data-i18n="auth_tagline">Ваш путь к восстановлению</span>
+                    </div>
+                </div>
+
+
+
+                <!-- Feature Pills -->
+                <div class="auth-features">
+                    <div class="auth-feature-pill">
+                        <i class="fas fa-book-medical"></i>
+                        <span data-i18n="feat_diary">Дневник здоровья</span>
+                    </div>
+                    <div class="auth-feature-pill">
+                        <i class="fas fa-dumbbell"></i>
+                        <span data-i18n="feat_exercises">Упражнения</span>
+                    </div>
+                    <div class="auth-feature-pill">
+                        <i class="fas fa-pills"></i>
+                        <span data-i18n="feat_meds">Лекарства</span>
+                    </div>
+                    <div class="auth-feature-pill">
+                        <i class="fas fa-microphone"></i>
+                        <span data-i18n="feat_voice">Голосовой помощник</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Form Panel -->
+        <div class="auth-form-panel">
+
+            <!-- Mobile-only logo (hidden on desktop) -->
+            <div class="auth-mobile-logo">
+                <img src="logo.png" alt="RehaAssist Logo" class="auth-logo-img">
+                <span class="auth-logo-name">RehaAssist</span>
+            </div>
+
+            <div class="auth-card">
+                <h2 data-i18n="auth_title">Добро пожаловать</h2>
+                <p data-i18n="auth_subtitle">Ваш персональный помощник по реабилитации</p>
+
+                <div class="auth-tabs">
+                    <button type="button" class="auth-tab active" data-tab="login" data-i18n="login_tab">Вход</button>
+                    <button type="button" class="auth-tab" data-tab="register" data-i18n="register_tab">Регистрация</button>
+                </div>
+
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form">
+                    <div class="input-group">
+                        <label data-i18n="email_label">Email</label>
+                        <input type="email" id="login-email" placeholder="example@mail.com" data-i18n="email_placeholder">
+                    </div>
+                    <div class="input-group">
+                        <label data-i18n="pass_label">Пароль</label>
+                        <div style="position: relative;">
+                            <input type="password" id="login-password" placeholder="Ваш пароль" data-i18n="pass_placeholder">
+                            <i class="fas fa-eye toggle-password" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-muted);" onclick="window.togglePassword('login-password', this)"></i>
+                        </div>
+                    </div>
+                    <button type="button" class="btn" id="login-btn" data-i18n="login_btn">Войти</button>
+                    <div class="auth-divider" data-i18n="or">или</div>
+                    <button type="button" class="btn btn-google" id="google-login-btn">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20" style="margin-right: 10px;">
+                        <span data-i18n="google_login">Войти через Google</span>
+                    </button>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="auth-form hidden">
+                    <div class="input-group">
+                        <label data-i18n="register_as">Я регистрируюсь как:</label>
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <button type="button" class="role-btn active" data-role="patient" data-i18n="patient">Для больного</button>
+                            <button type="button" class="role-btn" data-role="relative" data-i18n="relative">Для близкого</button>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label data-i18n="name_label">Ваше Имя</label>
+                        <input type="text" id="register-name" placeholder="Например, Анна" data-i18n="name_placeholder">
+                    </div>
+                    <div class="input-group">
+                        <label data-i18n="email_label">Email</label>
+                        <input type="email" id="register-email" placeholder="example@mail.com" data-i18n="email_placeholder">
+                    </div>
+                    <div class="input-group">
+                        <label data-i18n="pass_label">Пароль</label>
+                        <div style="position: relative;">
+                            <input type="password" id="register-password" placeholder="Придумайте пароль" data-i18n="pass_placeholder_new">
+                            <i class="fas fa-eye toggle-password" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-muted);" onclick="window.togglePassword('register-password', this)"></i>
+                        </div>
+                    </div>
+                    <div class="input-group hidden" id="patient-id-group">
+                        <label data-i18n="patient_id">ID Пациента</label>
+                        <input type="text" id="register-patient-id" placeholder="Указан в приложении пациента" data-i18n="patient_id_placeholder">
+                    </div>
+                    <button type="button" class="btn" id="register-btn" data-i18n="register_btn">Зарегистрироваться</button>
+                    <div class="auth-divider" data-i18n="or">или</div>
+                    <button type="button" class="btn btn-google" id="google-register-btn">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20" style="margin-right: 10px;">
+                        <span data-i18n="google_register">Регистрация через Google</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== MAIN APP ===================== -->
+    <div id="app" class="hidden">
+
+        <!-- Header -->
+        <header class="header">
+            <h1 id="page-title" data-i18n="nav_diary">Дневник</h1>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div class="header-btns">
+                    <button id="settings-btn" class="btn btn-secondary" title="Настройки" data-i18n="nav_settings"><i class="fas fa-cog"></i></button>
+                    <button id="logout-btn" class="btn btn-secondary" title="Выход" data-i18n="logout"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+                <div class="user-profile">
+                    <span id="user-name-display"></span>
+                    <img src="https://ui-avatars.com/api/?name=User&background=2dd4bf&color=fff&size=64" alt="Профиль" class="avatar">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main id="main-content" class="content"></main>
+
+        <!-- SOS Button -->
+        <button id="sos-btn" class="sos-btn" aria-label="Экстренный вызов">
+            <i class="fas fa-phone-alt"></i>
+            <span>SOS</span>
+        </button>
+
+        <!-- SOS Modal -->
+        <div id="sos-modal" class="modal-overlay hidden">
+            <div class="modal-content" style="text-align: center; padding: 40px; border-radius: 32px;">
+                <i class="fas fa-ambulance" style="font-size: 60px; color: var(--danger); margin-bottom: 20px;"></i>
+                <h2 style="color: var(--danger);" data-i18n="sos_title">Вызвать скорую?</h2>
+                <p style="margin-bottom: 30px; font-size: 18px;" data-i18n="sos_desc">Вы собираетесь позвонить по номеру 103.</p>
+                <div style="display: flex; gap: 15px;">
+                    <button id="close-sos-btn" class="btn btn-secondary" data-i18n="cancel">Отмена</button>
+                    <button id="confirm-sos-btn" class="btn" style="background: var(--danger);" data-i18n="call">Позвонить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Voice Button -->
+        <button id="voice-assistant-btn" class="voice-btn" aria-label="Слушать">
+            <i class="fas fa-microphone"></i>
+        </button>
+
+        <!-- Voice Modal -->
+        <div id="voice-modal" class="voice-modal hidden">
+            <div class="voice-modal-content">
+                <div class="voice-pulse-ring"></div>
+                <i class="fas fa-microphone-alt voice-icon-large"></i>
+                <h2 id="voice-status" data-i18n="listening">Говорите...</h2>
+                <p id="voice-response" class="voice-response-text"></p>
+                <button id="close-voice-btn" class="btn btn-secondary btn-large" data-i18n="cancel">Закрыть</button>
+            </div>
+        </div>
+
+        <!-- Toast -->
+        <div id="toast" class="toast hidden">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-message">Сохранено</span>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-target="diary" aria-label="Дневник">
+                <i class="fas fa-book-medical"></i>
+                <span data-i18n="nav_diary">Дневник</span>
+            </button>
+            <button class="nav-item" data-target="exercises" aria-label="Упражнения">
+                <i class="fas fa-dumbbell"></i>
+                <span data-i18n="nav_exercises">Зарядка</span>
+            </button>
+            <button class="nav-item" data-target="medications" aria-label="Лекарства">
+                <i class="fas fa-pills"></i>
+                <span data-i18n="nav_medications">Таблетки</span>
+            </button>
+            <button class="nav-item" data-target="relatives" aria-label="Близкие">
+                <i class="fas fa-user-friends"></i>
+                <span data-i18n="nav_relatives">Близкие</span>
+            </button>
+            <button class="nav-item" data-target="motivation" aria-label="Прогресс">
+                <i class="fas fa-medal"></i>
+                <span data-i18n="nav_motivation">Успехи</span>
+            </button>
+            <button class="nav-item" data-target="emergency" aria-label="Советы">
+                <i class="fas fa-shield-heart"></i>
+                <span data-i18n="nav_emergency">Советы</span>
+            </button>
+            <button class="nav-item" data-target="nutrition" aria-label="Питание">
+                <i class="fas fa-utensils"></i>
+                <span data-i18n="nav_nutrition">Питание</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- ===================== SCRIPTS ===================== -->
+    <script src="js/dataStore.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/diary.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/exercises.js"></script>
+    <script src="js/medications.js"></script>
+    <script src="js/relatives.js"></script>
+    <script src="js/motivation.js"></script>
+    <script src="js/emergency.js"></script>
+    <script src="js/nutrition.js"></script>
+    <script src="js/voiceAssistant.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Auth screen instant language switcher (no page reload needed)
+        window.setAuthLang = function(lang) {
+            localStorage.setItem('lang', lang);
+            document.querySelectorAll('.auth-lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            if (window.translateUI) window.translateUI(lang);
+        };
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('lang') || 'ru';
+            document.querySelectorAll('.auth-lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        });
+    </script>
+
+</body>
+</html>
